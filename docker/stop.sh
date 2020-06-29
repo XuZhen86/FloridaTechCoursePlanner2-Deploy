@@ -13,5 +13,3 @@ docker rm cp2-web-server
 # Remove volumes
 docker volume rm cp2-code
 docker volume rm cp2-data
-# Uncomment this line when Angular CLI is not working
-# docker volume rm cp2-node_modules
