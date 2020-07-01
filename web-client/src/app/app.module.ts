@@ -42,6 +42,7 @@ import { PickSemesterDialogComponent } from './semester-planner/semester-planner
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { CalendarCardComponent } from './calendar-card/calendar-card.component';
+import { MatMenuModule } from '@angular/material/menu';
 
 
 @NgModule({
@@ -93,6 +94,7 @@ import { CalendarCardComponent } from './calendar-card/calendar-card.component';
     ReactiveFormsModule,
     ScrollingModule,
     CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
+    MatMenuModule
   ],
   providers: [],
   bootstrap: [AppComponent]

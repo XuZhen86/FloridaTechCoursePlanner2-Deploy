@@ -18,6 +18,9 @@ export class MessageBusService {
         updateAvailable: 'CourseDataService.data.updateAvailable'
       }
     },
+    CourseSelectorCardComponent: {
+      gotoCourse: 'CourseSelectorCardComponent.gotoCourse'
+    },
     SectionFilterCardComponent: {
       newFilterFn: 'SectionFilterCardComponent.newFilterFn',
       resetFilters: 'SectionFilterCardComponent.resetFilters'

@@ -7,6 +7,7 @@ import { Subject, Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { PDFDocument, PDFPageDrawTextOptions } from 'pdf-lib';
 import { v4 as uuidv4 } from 'uuid';
+import { SemesterPlannerService } from '../semester-planner.service';
 
 @Component({
   selector: 'app-calendar-card',
@@ -19,7 +20,7 @@ export class CalendarCardComponent implements OnInit, AfterViewInit, OnDestroy {
 
   readonly viewDate = new Date();
   events: CalendarEvent<Section>[] = [];
-  readonly refresh = new Subject<void>();
+  readonly refresh = new Subject<undefined>();
 
   sections: Section[] = [];
   hoverSection: Section | null = null;
@@ -90,7 +91,8 @@ export class CalendarCardComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private readonly messageBus: MessageBusService,
     private readonly httpClient: HttpClient,
-    private readonly courseData: CourseDataService
+    private readonly courseData: CourseDataService,
+    private readonly semesterPlanner: SemesterPlannerService
   ) {
     this.SUBSCRIPTIONS.push(this.messageBus.on(
       MessageBusService.TOPICS.SemesterPlannerService.sections.update,
@@ -133,6 +135,22 @@ export class CalendarCardComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  removeSection(section: Section) {
+    this.semesterPlanner.sectionClick(section);
+  }
+
+  gotoCourse(section: Section) {
+    this.messageBus.cast(
+      MessageBusService.TOPICS.CourseSelectorCardComponent.gotoCourse,
+      section
+    );
+  }
+
+  eventClicked({ event }: { event: CalendarEvent, sourceEvent: MouseEvent }) {
+    const section: Section = event.meta;
+    this.gotoCourse(section);
+  }
+
   private sectionsUpdate(sections: Section[]) {
     this.sections = sections;
     if (this.hoverSection && sections.includes(this.hoverSection)) {
@@ -147,7 +165,7 @@ export class CalendarCardComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private hoverSectionEnter(section: Section) {
     if (!this.sections.includes(section)) {
-      const [events] = this.generateEvents([section], {primary: 'yellow', secondary: ''});
+      const [events] = this.generateEvents([section], {primary: 'orange', secondary: ''});
       this.events.push(...events);
       this.hoverSection = section;
       this.refresh.next();

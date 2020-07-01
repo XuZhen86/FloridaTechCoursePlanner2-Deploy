@@ -14,7 +14,11 @@ import { Subscription } from 'rxjs';
   encapsulation: ViewEncapsulation.None
 })
 export class CourseSelectorCardComponent implements OnInit, OnDestroy {
+  private readonly TOPICS = MessageBusService.TOPICS.CourseSelectorCardComponent;
   private readonly SUBSCRIPTIONS: (Subscription | undefined)[] = [];
+
+  subjectPrefixes: string[] = [];
+  readonly COURSE_LEVELS = Array.from(Array(7).keys());
 
   @ViewChild(MatTabGroup) tabGroup: MatTabGroup;
 
@@ -63,6 +67,10 @@ export class CourseSelectorCardComponent implements OnInit, OnDestroy {
       MessageBusService.TOPICS.SemesterPlannerService.sections.update,
       this.selectedSectionsUpdate.bind(this)
     ));
+    this.SUBSCRIPTIONS.push(this.messageBus.on(
+      this.TOPICS.gotoCourse,
+      this.gotoCourse.bind(this)
+    ));
   }
 
   ngOnInit(): void {
@@ -93,6 +101,8 @@ export class CourseSelectorCardComponent implements OnInit, OnDestroy {
       .map(s => s.copy(this.campus, this.semester ?? 'fall'))
       // Only keep subjects that has at least 1 course
       .filter(s => s.courses.length);
+
+    this.subjectPrefixes = [... new Set(this.subjects.map((subject) => subject.code[0]))];
   }
 
   subjectClick(s: Subject) {
@@ -103,6 +113,11 @@ export class CourseSelectorCardComponent implements OnInit, OnDestroy {
   courseClick(c: Course) {
     this.sections = c.sections;
     this.tabGroup.selectedIndex = 2;
+  }
+
+  private gotoCourse(s: Section) {
+    this.subjectClick(s.course.subject);
+    this.courseClick(s.course);
   }
 
   courseMouseEnter(c: Course) {
@@ -155,7 +170,7 @@ export class CourseSelectorCardComponent implements OnInit, OnDestroy {
   }
 
   courseNumberLevel(c: Course) {
-    return Math.floor(c.course / 1000);
+    return `${Math.floor(c.course / 1000)}000 Level`;
   }
 
   scheduleBuilding(s: SectionSchedule) {
@@ -292,6 +307,14 @@ export class CourseSelectorCardComponent implements OnInit, OnDestroy {
       default:
         return undefined;
     }
+  }
+
+  isCourseLevelExists(level: number) {
+    return this.courses.some((course) => Math.floor(course.course / 1000) === level);
+  }
+
+  scrollIntoView(id: string) {
+    document.getElementById(id)?.scrollIntoView();
   }
 }
 

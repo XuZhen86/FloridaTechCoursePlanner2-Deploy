@@ -46,7 +46,7 @@ export class SemesterPlannerComponent implements OnInit, AfterViewInit, OnDestro
 
     this.semesterYears = this.courseData.semesterYears;
     this.openPickSemesterDialog();
-    // this.reloadWithSemester('spring');
+    // setTimeout(this.reloadWithSemester.bind(this, 'fall'), 1000);
   }
 
   private openPickSemesterDialog() {
