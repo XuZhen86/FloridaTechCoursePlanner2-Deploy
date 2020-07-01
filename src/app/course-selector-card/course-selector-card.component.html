@@ -7,6 +7,7 @@
             matSubheader
             *ngIf="isFirst || subjects[i-1].code[0] != subject.code[0]"
             style="margin-top: 0px; color: rgb(255,87,34); background-color: whitesmoke;"
+            [attr.id]="'subject_' + subject.code[0]"
           >
             {{subject.code[0]}}
           </span>
@@ -21,6 +22,26 @@
           </mat-list-item>
         </div>
       </mat-nav-list>
+
+      <button
+        mat-raised-button
+        [matMenuTriggerFor]="subjectPrefixMenu"
+        #subjectPrefixMenuTrigger="matMenuTrigger"
+        (mouseenter)="subjectPrefixMenuTrigger.openMenu()"
+        style="position: absolute; top: 8px; right: 8px;"
+      >
+        Goto
+      </button>
+
+      <mat-menu #subjectPrefixMenu="matMenu">
+        <button
+          mat-menu-item
+          *ngFor="let prefix of subjectPrefixes"
+          (mouseenter)="scrollIntoView('subject_' + prefix)"
+        >
+          {{prefix}}
+        </button>
+      </mat-menu>
     </mat-tab>
 
     <mat-tab label="Courses" [disabled]="courses.length === 0">
@@ -30,8 +51,9 @@
             matSubheader
             *ngIf="isFirst || courseNumberLevel(courses[i-1]) !== courseNumberLevel(course)"
             style="margin-top: 0px; color: rgb(255,87,34); background-color: whitesmoke;"
+            [attr.id]="'course_' + courseNumberLevel(course)"
           >
-            {{courseNumberLevel(course)}}000 Level
+            {{courseNumberLevel(course)}}
           </span>
 
           <mat-list-item
@@ -58,6 +80,27 @@
           </mat-list-item>
         </div>
       </mat-nav-list>
+
+      <button
+        mat-raised-button
+        [matMenuTriggerFor]="courseLevelMenu"
+        #courseLevelMenuTrigger="matMenuTrigger"
+        (mouseenter)="courseLevelMenuTrigger.openMenu()"
+        style="position: absolute; top: 8px; right: 8px;"
+      >
+        Goto
+      </button>
+
+      <mat-menu #courseLevelMenu="matMenu">
+        <button
+          mat-menu-item
+          *ngFor="let level of COURSE_LEVELS"
+          [disabled]="!isCourseLevelExists(level)"
+          (mouseenter)="scrollIntoView('course_' + level + '000 Level')"
+        >
+          {{level}}000 Level
+        </button>
+      </mat-menu>
     </mat-tab>
 
     <mat-tab label="Sections" [disabled]="sections.length === 0">
@@ -68,6 +111,7 @@
           (mouseenter)="sectionMouseEnter(section)"
           (mouseleave)="sectionMouseLeave()"
           [style.background-color]="sectionBackgroundColor(section)"
+          style="height: min-content; padding: 12px 0px"
         >
           <div style="width: max-content; height: max-content;" fxLayout="column" mat-list-avatar>
             <span class="badge badge-primary">{{section.crn}}</span>

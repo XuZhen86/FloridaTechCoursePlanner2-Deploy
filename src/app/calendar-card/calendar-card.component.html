@@ -16,6 +16,7 @@
         [eventTitleTemplate]="eventTitleTemplate"
         [events]="events"
         [refresh]="refresh"
+        (eventClicked)="eventClicked($event)"
       >
       </mwl-calendar-week-view>
     </mat-tab>
@@ -36,6 +37,7 @@
           <th>Days</th>
           <th>Time</th>
           <th>CRs.</th>
+          <th></th>
         </tr>
 
         <tr *ngFor="let section of sections">
@@ -54,6 +56,10 @@
             {{section.creditHours[0]}}
             <span *ngIf="section.creditHours[0] !== section.creditHours[1]"> - {{section.creditHours[1]}}</span>
           </td>
+          <td fxLayout="row" fxLayoutGap="8px">
+            <button mat-stroked-button color="primary" (click)="gotoCourse(section)">Goto Course</button>
+            <button mat-stroked-button color="warn" (click)="removeSection(section)">Remove</button>
+          </td>
         </tr>
       </table>
     </mat-tab>
@@ -70,7 +76,7 @@
             </mat-form-field>
           </div>
         </div>
-`
+
         <div fxFlex id="regForm">
           <embed src="assets/form/registrationForm.pdf" style="width: 100%; height: 100%;">
         </div>
