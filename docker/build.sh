@@ -11,4 +11,4 @@ cd build
 npm install | tee -a $LOG_FILE
 
 # Compile
-node_modules/@angular/cli/bin/ng build --prod | tee -a $LOG_FILE
+node_modules/@angular/cli/bin/ng build --prod --base-href '.' | tee -a $LOG_FILE
